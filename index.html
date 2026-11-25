@@ -253,7 +253,7 @@ if(sending)return true;sending=true;
 var n=document.getElementById('n').value,c=document.getElementById('e').value,m=document.getElementById('m').value,btn=document.querySelector('.send');btn.disabled=true;btn.textContent='SENDING…';
 fetch('https://api.emailjs.com/api/v1.0/email/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({service_id:EJ.service,template_id:EJ.template,user_id:EJ.pub,template_params:{from_name:n,name:n,reply_to:/@/.test(c)?c:'',email:c,message:m,title:'Portfolio message from '+n,time:new Date().toLocaleString()}})})
 .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error(r.status+' '+t)});say('Message sent! I’ll get back to you soon.');document.getElementById('f').reset()})
-.catch(function(err){console.error('EmailJS error:',err);say('Could not send ('+String(err&&err.message||err).slice(0,120)+'). Opening your email app…');location.href='mailto:supreetashi11@gmail.com?subject='+encodeURIComponent('Portfolio message from '+n)+'&body='+encodeURIComponent(m+'\n\n'+n+' ('+c+')')})
+.catch(function(err){console.error('EmailJS error:',err);say('Could not send ('+String(err&&err.message||err).slice(0,120)+', service: '+EJ.service+'). Opening your email app…');location.href='mailto:supreetashi11@gmail.com?subject='+encodeURIComponent('Portfolio message from '+n)+'&body='+encodeURIComponent(m+'\n\n'+n+' ('+c+')')})
 .then(function(){sending=false;btn.disabled=false;btn.innerHTML='SEND &#10148;'});
 return true};
 })();
