@@ -122,6 +122,7 @@ footer{padding-bottom:20px}
 img.avatar{display:block;object-fit:cover;object-position:50% 20%;border:3px solid #c800e0;background:#222}
 .proj .img.shot{padding:0;overflow:hidden;background:#fff}
 .proj .img.shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+#toast{max-width:90vw;text-align:center}
 </style>
 </head>
 <body>
@@ -205,7 +206,7 @@ var $=function(s){return Array.prototype.slice.call(document.querySelectorAll(s)
 function mk(tag,id,txt){var e=document.createElement(tag);e.id=id;if(txt)e.textContent=txt;document.body.appendChild(e);return e}
 var bar=mk('div','bar'),glow=mk('div','glow'),top=mk('button','top','↑'),toast=mk('div','toast'),tt;
 top.setAttribute('aria-label','Back to top');
-function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},2600)}
+function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},7000)}
 /* typing roles */
 var roles=['Full Stack Developer','ReactJS Developer','Node.js & Express Builder','REST API Enthusiast'],ty=document.getElementById('type'),ri=0,ci=ty.textContent.length,del=true;
 function tick(){if(!hv){setTimeout(tick,400);return}var w=roles[ri];ty.textContent=w.slice(0,ci);
@@ -251,8 +252,8 @@ if(EJ.service.indexOf('YOUR_')===0||EJ.template.indexOf('YOUR_')===0){say('Openi
 if(sending)return true;sending=true;
 var n=document.getElementById('n').value,c=document.getElementById('e').value,m=document.getElementById('m').value,btn=document.querySelector('.send');btn.disabled=true;btn.textContent='SENDING…';
 fetch('https://api.emailjs.com/api/v1.0/email/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({service_id:EJ.service,template_id:EJ.template,user_id:EJ.pub,template_params:{from_name:n,name:n,reply_to:/@/.test(c)?c:'',email:c,message:m,title:'Portfolio message from '+n,time:new Date().toLocaleString()}})})
-.then(function(r){if(!r.ok)throw 0;say('Message sent! I’ll get back to you soon.');document.getElementById('f').reset()})
-.catch(function(){say('Could not send. Opening your email app…');location.href='mailto:supreetashi11@gmail.com?subject='+encodeURIComponent('Portfolio message from '+n)+'&body='+encodeURIComponent(m+'\n\n'+n+' ('+c+')')})
+.then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error(r.status+' '+t)});say('Message sent! I’ll get back to you soon.');document.getElementById('f').reset()})
+.catch(function(err){console.error('EmailJS error:',err);say('Could not send ('+String(err&&err.message||err).slice(0,120)+'). Opening your email app…');location.href='mailto:supreetashi11@gmail.com?subject='+encodeURIComponent('Portfolio message from '+n)+'&body='+encodeURIComponent(m+'\n\n'+n+' ('+c+')')})
 .then(function(){sending=false;btn.disabled=false;btn.innerHTML='SEND &#10148;'});
 return true};
 })();
